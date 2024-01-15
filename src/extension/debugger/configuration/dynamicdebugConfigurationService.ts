@@ -23,30 +23,28 @@ export class DynamicPythonDebugConfigurationService implements IDynamicDebugConf
         const providers = [];
 
         providers.push({
-            name: 'Debugpy: Python File',
+            name: 'Python Debugger: Python File',
             type: DebuggerTypeName,
             request: 'launch',
             program: '${file}',
-            justMyCode: true,
         });
 
         const djangoManagePath = await DynamicPythonDebugConfigurationService.getDjangoPath(folder);
         if (djangoManagePath) {
             providers.push({
-                name: 'Debugpy: Django',
+                name: 'Python Debugger: Django',
                 type: DebuggerTypeName,
                 request: 'launch',
                 program: `${workspaceFolderToken}${path.sep}${djangoManagePath}`,
                 args: ['runserver'],
                 django: true,
-                justMyCode: true,
             });
         }
 
         const flaskPath = await DynamicPythonDebugConfigurationService.getFlaskPath(folder);
         if (flaskPath) {
             providers.push({
-                name: 'Debugpy: Flask',
+                name: 'Python Debugger: Flask',
                 type: DebuggerTypeName,
                 request: 'launch',
                 module: 'flask',
@@ -56,7 +54,6 @@ export class DynamicPythonDebugConfigurationService implements IDynamicDebugConf
                 },
                 args: ['run', '--no-debugger', '--no-reload'],
                 jinja: true,
-                justMyCode: true,
             });
         }
 
@@ -64,13 +61,12 @@ export class DynamicPythonDebugConfigurationService implements IDynamicDebugConf
         if (fastApiPath) {
             fastApiPath = replaceAll(path.relative(folder.uri.fsPath, fastApiPath), path.sep, '.').replace('.py', '');
             providers.push({
-                name: 'Debugpy: FastAPI',
+                name: 'Python Debugger: FastAPI',
                 type: DebuggerTypeName,
                 request: 'launch',
                 module: 'uvicorn',
                 args: [`${fastApiPath}:app`, '--reload'],
                 jinja: true,
-                justMyCode: true,
             });
         }
 

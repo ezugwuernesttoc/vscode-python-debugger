@@ -17,7 +17,10 @@ suite('Debugging - Configuration Provider File with Arguments', () => {
         const folder = { uri: Uri.parse(path.join('one', 'two')), name: '1', index: 0 };
         const state = { config: {}, folder };
 
-        await buildFileWithArgsLaunchDebugConfiguration(undefined as unknown as MultiStepInput<DebugConfigurationState>, state);
+        await buildFileWithArgsLaunchDebugConfiguration(
+            undefined as unknown as MultiStepInput<DebugConfigurationState>,
+            state,
+        );
 
         const config = {
             name: DebugConfigStrings.fileWithArgs.snippet.name,
@@ -26,7 +29,6 @@ suite('Debugging - Configuration Provider File with Arguments', () => {
             program: '${file}',
             console: 'integratedTerminal',
             args: '${command:pickArgs}',
-            justMyCode: true,
         };
 
         expect(state.config).to.be.deep.equal(config);

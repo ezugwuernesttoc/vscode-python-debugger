@@ -6,7 +6,15 @@
 import { expect } from 'chai';
 import * as TypeMoq from 'typemoq';
 import * as sinon from 'sinon';
-import { DebugConfiguration, DebugConfigurationProvider, TextDocument, TextEditor, Uri, WorkspaceFolder } from 'vscode';
+import {
+    DebugConfiguration,
+    DebugConfigurationProvider,
+    TextDocument,
+    TextEditor,
+    Uri,
+    WorkspaceConfiguration,
+    WorkspaceFolder,
+} from 'vscode';
 import { PYTHON_LANGUAGE } from '../../../../extension/common/constants';
 import { LaunchConfigurationResolver } from '../../../../extension/debugger/configuration/resolvers/launch';
 import { getInfoPerOS } from './common';
@@ -17,6 +25,7 @@ import { DebuggerTypeName } from '../../../../extension/constants';
 import * as pythonApi from '../../../../extension/common/python';
 import * as settings from '../../../../extension/common/settings';
 import * as helper from '../../../../extension/debugger/configuration/resolvers/helper';
+import { debuggerTypeName } from '../../../common';
 
 getInfoPerOS().forEach(([osName, osType, path]) => {
     if (osType === platform.OSType.Unknown) {
@@ -31,6 +40,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
         let getInterpreterDetailsStub: sinon.SinonStub;
         let getEnvFileStub: sinon.SinonStub;
         let getDebugEnvironmentVariablesStub: sinon.SinonStub;
+        let getConfigurationStub: sinon.SinonStub;
 
         setup(() => {
             getActiveTextEditorStub = sinon.stub(vscodeapi, 'getActiveTextEditor');
@@ -40,6 +50,8 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             getInterpreterDetailsStub = sinon.stub(pythonApi, 'getInterpreterDetails');
             getEnvFileStub = sinon.stub(settings, 'getEnvFile');
             getDebugEnvironmentVariablesStub = sinon.stub(helper, 'getDebugEnvironmentVariables');
+            getConfigurationStub = sinon.stub(vscodeapi, 'getConfiguration');
+            getConfigurationStub.withArgs('debugpy', sinon.match.any).returns(createMoqConfiguration(true));
         });
 
         teardown(() => {
@@ -50,6 +62,14 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             const folder = TypeMoq.Mock.ofType<WorkspaceFolder>();
             folder.setup((f) => f.uri).returns(() => Uri.file(folderPath));
             return folder.object;
+        }
+
+        function createMoqConfiguration(justMyCode: boolean) {
+            const debugpySettings = TypeMoq.Mock.ofType<WorkspaceConfiguration>();
+            debugpySettings
+                .setup((p) => p.get<boolean>('debugJustMyCode', TypeMoq.It.isAny()))
+                .returns(() => justMyCode);
+            return debugpySettings.object;
         }
 
         function getClientOS() {
@@ -88,7 +108,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
 
         const launch: LaunchRequestArguments = {
             name: 'Python launch',
-            type: 'debugpy',
+            type: debuggerTypeName,
             request: 'launch',
         };
 
@@ -134,7 +154,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             const debugConfig = await resolveDebugConfiguration(workspaceFolder, {});
 
             expect(Object.keys(debugConfig!)).to.have.lengthOf.above(3);
-            expect(debugConfig).to.have.property('type', 'debugpy');
+            expect(debugConfig).to.have.property('type', debuggerTypeName);
             expect(debugConfig).to.have.property('request', 'launch');
             expect(debugConfig).to.have.property('clientOS', getClientOS());
             expect(debugConfig).to.not.have.property('pythonPath');
@@ -163,7 +183,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             });
 
             expect(Object.keys(debugConfig!)).to.have.lengthOf.above(3);
-            expect(debugConfig).to.have.property('type', 'debugpy');
+            expect(debugConfig).to.have.property('type', debuggerTypeName);
             expect(debugConfig).to.have.property('request', 'launch');
             expect(debugConfig).to.have.property('clientOS', getClientOS());
             expect(debugConfig).to.not.have.property('pythonPath');
@@ -191,7 +211,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             const filePath = Uri.file(path.dirname('')).fsPath;
 
             expect(Object.keys(debugConfig!)).to.have.lengthOf.above(3);
-            expect(debugConfig).to.have.property('type', 'debugpy');
+            expect(debugConfig).to.have.property('type', debuggerTypeName);
             expect(debugConfig).to.have.property('request', 'launch');
             expect(debugConfig).to.have.property('clientOS', getClientOS());
             expect(debugConfig).to.not.have.property('pythonPath');
@@ -217,7 +237,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             const debugConfig = await resolveDebugConfiguration(undefined, {});
 
             expect(Object.keys(debugConfig!)).to.have.lengthOf.above(3);
-            expect(debugConfig).to.have.property('type', 'debugpy');
+            expect(debugConfig).to.have.property('type', debuggerTypeName);
             expect(debugConfig).to.have.property('clientOS', getClientOS());
             expect(debugConfig).to.not.have.property('pythonPath');
             expect(debugConfig).to.have.property('python', pythonPath);
@@ -242,7 +262,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             const debugConfig = await resolveDebugConfiguration(undefined, {});
 
             expect(Object.keys(debugConfig!)).to.have.lengthOf.above(3);
-            expect(debugConfig).to.have.property('type', 'debugpy');
+            expect(debugConfig).to.have.property('type', debuggerTypeName);
             expect(debugConfig).to.have.property('request', 'launch');
             expect(debugConfig).to.have.property('clientOS', getClientOS());
             expect(debugConfig).to.not.have.property('pythonPath');
@@ -269,7 +289,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             const filePath = Uri.file(defaultWorkspace).fsPath;
 
             expect(Object.keys(debugConfig!)).to.have.lengthOf.above(3);
-            expect(debugConfig).to.have.property('type', 'debugpy');
+            expect(debugConfig).to.have.property('type', debuggerTypeName);
             expect(debugConfig).to.have.property('request', 'launch');
             expect(debugConfig).to.have.property('clientOS', getClientOS());
             expect(debugConfig).to.not.have.property('pythonPath');
@@ -686,7 +706,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
         });
 
         test('Test defaults of python debugger', async () => {
-            if (DebuggerTypeName === 'debugpy') {
+            if (DebuggerTypeName === debuggerTypeName) {
                 return;
             }
             const pythonPath = `PythonPath_${new Date().toString()}`;
@@ -726,11 +746,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
             expect(debugConfig).to.have.property('redirectOutput', true);
             expect(debugConfig).to.have.property('justMyCode', false);
             expect(debugConfig).to.have.property('debugOptions');
-            const expectedOptions = [
-                DebugOptions.DebugStdLib,
-                DebugOptions.ShowReturnValue,
-                DebugOptions.RedirectOutput,
-            ];
+            const expectedOptions = [DebugOptions.ShowReturnValue, DebugOptions.RedirectOutput];
             if (osType === platform.OSType.Windows) {
                 expectedOptions.push(DebugOptions.FixFilePathCase);
             }
@@ -740,60 +756,47 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
         const testsForJustMyCode = [
             {
                 justMyCode: false,
-                debugStdLib: true,
+                justMyCodeSetting: true,
                 expectedResult: false,
             },
             {
                 justMyCode: false,
-                debugStdLib: false,
-                expectedResult: false,
-            },
-            {
-                justMyCode: false,
-                debugStdLib: undefined,
+                justMyCodeSetting: false,
                 expectedResult: false,
             },
             {
                 justMyCode: true,
-                debugStdLib: false,
+                justMyCodeSetting: false,
                 expectedResult: true,
             },
             {
                 justMyCode: true,
-                debugStdLib: true,
-                expectedResult: true,
-            },
-            {
-                justMyCode: true,
-                debugStdLib: undefined,
+                justMyCodeSetting: true,
                 expectedResult: true,
             },
             {
                 justMyCode: undefined,
-                debugStdLib: false,
-                expectedResult: true,
-            },
-            {
-                justMyCode: undefined,
-                debugStdLib: true,
+                justMyCodeSetting: false,
                 expectedResult: false,
             },
             {
                 justMyCode: undefined,
-                debugStdLib: undefined,
+                justMyCodeSetting: true,
                 expectedResult: true,
             },
         ];
-        test('Ensure justMyCode property is correctly derived from debugStdLib', async () => {
-            const pythonPath = `PythonPath_${new Date().toString()}`;
-            const workspaceFolder = createMoqWorkspaceFolder(__dirname);
-            const pythonFile = 'xyz.py';
-            setupIoc(pythonPath);
-            setupActiveEditor(pythonFile, PYTHON_LANGUAGE);
-            testsForJustMyCode.forEach(async (testParams) => {
+        testsForJustMyCode.forEach(async (testParams) => {
+            test('Ensure justMyCode property is correctly derived from global settings', async () => {
+                const pythonPath = `PythonPath_${new Date().toString()}`;
+                const workspaceFolder = createMoqWorkspaceFolder(__dirname);
+                const pythonFile = 'xyz.py';
+                setupIoc(pythonPath);
+                setupActiveEditor(pythonFile, PYTHON_LANGUAGE);
+                getConfigurationStub
+                    .withArgs('debugpy', sinon.match.any)
+                    .returns(createMoqConfiguration(testParams.justMyCodeSetting));
                 const debugConfig = await resolveDebugConfiguration(workspaceFolder, {
                     ...launch,
-                    debugStdLib: testParams.debugStdLib,
                     justMyCode: testParams.justMyCode,
                 });
                 expect(debugConfig).to.have.property('justMyCode', testParams.expectedResult);
@@ -930,6 +933,7 @@ getInfoPerOS().forEach(([osName, osType, path]) => {
                 request: requestType,
                 type: 'python',
                 name: '',
+                justMyCode: false,
                 ...settings,
             };
             const workspaceFolder = createMoqWorkspaceFolder(__dirname);

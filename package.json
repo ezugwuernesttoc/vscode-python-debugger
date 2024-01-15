@@ -1,9 +1,12 @@
 {
     "name": "debugpy",
-    "displayName": "Debugpy",
+    "displayName": "Python Debugger",
     "description": "Python Debugger extension using `debugpy`.",
     "version": "2023.1.0-dev",
     "publisher": "ms-python",
+    "enabledApiProposals": [
+        "portsAttributes"
+    ],
     "license": "MIT",
     "homepage": "https://github.com/Microsoft/vscode-python-debugger",
     "repository": {
@@ -36,18 +39,18 @@
     "contributes": {
         "commands": [
             {
-                "category": "Debugpy",
+                "category": "Python Debugger",
                 "command": "debugpy.debugInTerminal",
                 "icon": "$(debug-alt)",
                 "title": "%debugpy.command.debugInTerminal.title%"
             },
             {
-                "category": "Debugpy",
+                "category": "Python Debugger",
                 "command": "debugpy.clearCacheAndReload",
                 "title": "%debugpy.command.clearCacheAndReload.title%"
             },
             {
-                "category": "Debugpy",
+                "category": "Python Debugger",
                 "command": "debugpy.viewOutput",
                 "icon": {
                     "dark": "resources/dark/repl.svg",
@@ -59,22 +62,34 @@
         "menus": {
             "commandPalette": [
                 {
-                    "category": "Debugpy",
+                    "category": "Python Debugger",
                     "command": "debugpy.clearCacheAndReload",
                     "title": "%debugpy.command.clearCacheAndReload.title%"
                 },
                 {
-                    "category": "Debugpy",
+                    "category": "Python Debugger",
                     "command": "debugpy.debugInTerminal",
                     "icon": "$(debug-alt)",
                     "title": "%debugpy.command.debugInTerminal.title%"
                 },
                 {
-                    "category": "Debugpy",
+                    "category": "Python Debugger",
                     "command": "debugpy.viewOutput",
                     "title": "%debugpy.command.viewOutput.title%"
                 }
             ]
+        },
+        "configuration": {
+            "properties": {
+                "debugpy.debugJustMyCode": {
+                    "default": true,
+                    "description": "%debugpy.debugJustMyCode%",
+                    "scope": "resource",
+                    "type": "boolean"
+                }
+            },
+            "title": "Python Debugger",
+            "type": "object"
         },
         "debuggers": [
             {
@@ -419,7 +434,7 @@
                     }
                 },
                 "configurationSnippets": [],
-                "label": "Debugpy",
+                "label": "Python Debugger",
                 "languages": [
                     "python"
                 ],
@@ -453,33 +468,33 @@
         "@types/glob": "^7.2.0",
         "@types/lodash": "^4.14.191",
         "@types/mocha": "^10.0.1",
-        "@types/node": "16.x",
+        "@types/node": "18.x",
         "@types/semver": "^7.3.13",
         "@types/sinon": "^10.0.13",
         "@types/vscode": "^1.78.0",
         "@typescript-eslint/eslint-plugin": "^5.31.0",
-        "@typescript-eslint/parser": "^5.31.0",
+        "@typescript-eslint/parser": "^5.62.0",
         "@vscode/test-electron": "^2.1.5",
         "@vscode/vsce": "^2.19.0",
         "chai": "^4.3.7",
         "chai-as-promised": "^7.1.1",
-        "eslint": "^8.20.0",
+        "eslint": "^8.50.0",
         "glob": "^8.0.3",
         "mocha": "^10.0.0",
-        "prettier": "^2.7.1",
+        "prettier": "^3.0.3",
         "rewiremock": "^3.13.0",
         "semver": "^7.5.4",
         "sinon": "^15.0.2",
         "ts-loader": "^9.3.1",
         "ts-mockito": "^2.6.1",
         "typemoq": "^2.1.0",
-        "typescript": "^5.1.3",
+        "typescript": "^5.2.2",
         "vscode-test": "^1.6.1",
         "webpack": "^5.87.0",
         "webpack-cli": "^5.1.4"
     },
     "dependencies": {
-        "@vscode/extension-telemetry": "^0.7.7",
+        "@vscode/extension-telemetry": "^0.8.5",
         "fs-extra": "^11.1.0",
         "iconv-lite": "^0.6.3",
         "inversify": "^6.0.1",

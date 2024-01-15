@@ -265,7 +265,7 @@ export interface IEventNamePropertyMapping {
     /* __GDPR__
        "debug.success_activation" : {
           "codeloadingtime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
-\         "errorname" : { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "owner": "paulacamargo25" },
+          "errorname" : { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth", "owner": "paulacamargo25" }
        }
      */
     [EventName.DEBUG_SUCCESS_ACTIVATION]: {};
@@ -384,21 +384,6 @@ export interface IEventNamePropertyMapping {
          */
         console?: ConsoleType;
     };
-    // /**
-    //  * Telemetry event sent when we are checking if we can handle the diagnostic code
-    //  */
-    // /* __GDPR__
-    //    "diagnostics.message" : {
-    //       "code" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "karthiknadig" }
-    //    }
-    //  */
-    // [EventName.DIAGNOSTICS_MESSAGE]: {
-    //     /**
-    //      * Code of diagnostics message detected and displayed.
-    //      * @type {string}
-    //      */
-    //     code: DiagnosticCodes;
-    // };
     /**
      * Telemetry captured when user code starts running after loading the debugger.
      */
@@ -588,26 +573,26 @@ export interface IEventNamePropertyMapping {
        }
      */
     [EventName.DEBUGGER_ATTACH_TO_CHILD_PROCESS]: never | undefined;
-    // /**
-    //  * Telemetry event sent when attaching to a local process.
-    //  */
-    // /* __GDPR__
-    //    "debugger.attach_to_local_process" : { "owner": "paulacamargo25" }
-    //  */
+    /**
+     * Telemetry event sent when attaching to a local process.
+     */
+    /* __GDPR__
+       "debugger.attach_to_local_process" : { "owner": "paulacamargo25" }
+     */
     [EventName.DEBUGGER_ATTACH_TO_LOCAL_PROCESS]: never | undefined;
-    // /**
-    //  * Telemetry sent after building configuration for debugger
-    //  */
-    // /* __GDPR__
-    //    "debugger.configuration.prompts" : {
-    //       "configurationtype" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
-    //       "autodetecteddjangomanagepypath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
-    //       "autodetectedpyramidinipath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
-    //       "autodetectedfastapimainpypath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
-    //       "autodetectedflaskapppypath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
-    //       "manuallyenteredavalue" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" }
-    //    }
-    //  */
+    /**
+     * Telemetry sent after building configuration for debugger
+     */
+    /* __GDPR__
+       "debugger.configuration.prompts" : {
+          "configurationtype" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
+          "autodetecteddjangomanagepypath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
+          "autodetectedpyramidinipath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
+          "autodetectedfastapimainpypath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
+          "autodetectedflaskapppypath" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" },
+          "manuallyenteredavalue" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "paulacamargo25" }
+       }
+     */
 
     [EventName.DEBUGGER_CONFIGURATION_PROMPTS]: {
         /**
@@ -655,39 +640,6 @@ export interface IEventNamePropertyMapping {
        "debugger.configuration.prompts.in.launch.json" : { "owner": "paulacamargo25" }
      */
     [EventName.DEBUGGER_CONFIGURATION_PROMPTS_IN_LAUNCH_JSON]: never | undefined;
-    /**
-     * Telemetry event sent with details of actions when invoking a diagnostic command
-     */
-    /* __GDPR__
-       "diagnostics.action" : {
-          "commandname" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "karthiknadig" },
-          "ignorecode" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "karthiknadig" },
-          "url" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "karthiknadig" },
-          "action" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "owner": "karthiknadig" }
-       }
-     */
-    [EventName.DIAGNOSTICS_ACTION]: {
-        /**
-         * Diagnostics command executed.
-         * @type {string}
-         */
-        commandName?: string;
-        /**
-         * Diagnostisc code ignored (message will not be seen again).
-         * @type {string}
-         */
-        ignoreCode?: string;
-        /**
-         * Url of web page launched in browser.
-         * @type {string}
-         */
-        url?: string;
-        /**
-         * Custom actions performed.
-         * @type {'switchToCommandPrompt'}
-         */
-        action?: 'switchToCommandPrompt';
-    };
     /**
      * Telemetry event sent when substituting Environment variables to calculate value of variables
      */
