@@ -30,15 +30,7 @@ extends:
     l10nSourcePaths: ./src
     buildPlatforms:
       - name: Linux
-        os: ubuntu-20.04
-        packageArch: arm64
-        vsceTarget: linux-arm64
-      - name: Linux
-        packageArch: arm
-        vsceTarget: linux-armhf
-      - name: Linux
-        packageArch: x64
-        vsceTarget: linux-x64
+        vsceTarget: ''
       - name: MacOS
         packageArch: arm64
         vsceTarget: darwin-arm64
